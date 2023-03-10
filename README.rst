@@ -25,6 +25,9 @@ run the following command in the root directory of the project:
     
     The resulting binary will be located in `target/release/`
 
+
+Or:
+    get the latest windows-x64 build from https://github.com/Gteditor99/hex_manipulation/releases/latest
 --------------------------
 Usage::
 
