@@ -9,7 +9,7 @@ use std::io::{BufReader, Read};
 extern crate colored;
 
 fn main() {
-    env::set_var("RUST_BACKTRACE", "1");
+    // env::set_var("RUST_BACKTRACE", "1");
     println!("{}","\t\tHex Editor".bold().bright_green());
     println!("{}","\t\tby editor99".bold().bright_green());
     println!("{}","\t\t\nDrag & Drop a file to open it.".blue());
