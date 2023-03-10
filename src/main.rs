@@ -1,13 +1,15 @@
 // rust cli tool to read files and print their hex values
 use colored::Colorize;
 use std::env;
-use hex::FromHex;
+use std::io::Write;
+use hex;
 use std::fs::File;
 use std::io::{BufReader, Read};
 
 extern crate colored;
 
 fn main() {
+    env::set_var("RUST_BACKTRACE", "1");
     println!("{}","\t\tHex Editor".bold().bright_green());
     println!("{}","\t\tby editor99".bold().bright_green());
     println!("{}","\t\t\nDrag & Drop a file to open it.".blue());
@@ -16,11 +18,11 @@ fn main() {
     let mut file_path = String::new();
     std::io::stdin().read_line(&mut file_path).expect("Error reading file path");
     file_path = file_path.trim().to_string();
-    let file = File::open(file_path).expect("File not found");
+    let file = File::open(file_path.clone()).expect("File not found");
     let mut reader = BufReader::new(file);
     let mut buffer = Vec::new();
     reader.read_to_end(&mut buffer).expect("Error reading file");
-    let hex_string = hex::encode(buffer);
+    let hex_string = hex::encode(buffer.clone());
     let bytes = hex::decode(&hex_string).unwrap();
 
     // print hex values in a grid
@@ -49,8 +51,28 @@ fn main() {
     println!("File size: {} bytes", bytes.len().to_string().bright_yellow());
 
     // write to file 
+    // get user input for hex string to inject
+    println!("{}","\n\nEnter hex string to inject (without spaces):".blue());
+    let mut hex_string = String::new();
+    std::io::stdin().read_line(&mut hex_string).expect("Error reading hex string");
+    // hex_string to hex bytes
+    let hex_string = hex::encode(hex_string.trim().as_bytes());
+
+    // decode hex string to bytes and append to buffer
+    let injected_bytes = hex::decode(&hex_string).expect("Error decoding hex string");
+    buffer.extend(injected_bytes);
+
+    // write buffer to file
+    let mut file = File::create(&file_path).expect("Error creating file");
+    file.write_all(&buffer).expect("Error writing to file");
+
+    // print file size and exit message
+    println!("File size: {} bytes", buffer.len().to_string().bright_yellow());
+    println!("{}","Press Enter to exit.".bold().bright_green());
+    let mut exit = String::new();
+    std::io::stdin().read_line(&mut exit).expect("Error reading exit input");
     
 
     println!("{}","Press Enter to exit.".bold().bright_green());
-    let mut exit = String::new();
+    let exit = String::new();
 }
